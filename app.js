@@ -1,765 +1,733 @@
-// DOM Elements
-const themeToggle = document.getElementById('theme-toggle');
-const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-const navMenu = document.getElementById('nav-menu');
-const navLinks = document.querySelectorAll('.nav-link');
-const typingText = document.getElementById('typing-text');
-const particlesContainer = document.getElementById('particles');
-const contactForm = document.getElementById('contact-form');
-const downloadResumeBtn = document.getElementById('download-resume');
-const filterBtns = document.querySelectorAll('.filter-btn');
-const projectCards = document.querySelectorAll('.project-card');
-const statNumbers = document.querySelectorAll('.stat-number');
-const progressBars = document.querySelectorAll('.progress-bar');
+const { useState, useEffect, useRef } = React;
 
-// Theme Management
-let currentTheme = localStorage.getItem('theme') || 'light';
-
-function setTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.setAttribute('data-color-scheme', theme);
-    localStorage.setItem('theme', theme);
-    currentTheme = theme;
-    
-    const icon = themeToggle.querySelector('i');
-    if (theme === 'dark') {
-        icon.className = 'fas fa-sun';
-    } else {
-        icon.className = 'fas fa-moon';
+// Portfolio data
+const portfolioData = {
+  personal_info: {
+    name: "Piyush Bhardwaj",
+    title: "Software Developer & Blockchain Enthusiast",
+    email: "piyushkr07p@gmail.com",
+    phone: "+91 7520319768",
+    location: "Gurgaon, Haryana",
+    linkedin: "https://linkedin.com/in/piyush-bhardwaj",
+    github: "https://github.com/piyushbhardwaj",
+    leetcode: "https://leetcode.com/piyushbhardwaj",
+    bio: "Passionate software developer with expertise in full-stack web development and blockchain technologies. Currently pursuing Computer Science Engineering with a focus on innovative solutions and cutting-edge technologies."
+  },
+  stats: {
+    experience_years: "1+",
+    technologies_count: "22+",
+    projects_count: "3",
+    certifications_count: "10+"
+  },
+  skills: {
+    programming_languages: ["Java", "C", "C++", "JavaScript", "SQL"],
+    web_technologies: ["HTML5", "CSS3", "Bootstrap", "Tailwind CSS", "ReactJS", "NodeJS", "ExpressJS", "MongoDB",],
+    //blockchain_technologies: ["Solidity", "Web3.js", "Smart Contracts", "Ethereum", "Avalanche", "Polygon", "MetaMask"],
+    development_tools: ["VS Code", "Git/GitHub", "Postman"],
+    core_competencies: [
+      "Web Development", "Software Engineering", "Data Structures & Algorithms",
+      "Operating Systems", "Computer Architecture", "Database Management Systems",
+      "Computer Networks", "Object-Oriented Programming"
+    ]
+  },
+  experience: [
+    {
+      position: "Software Engineer Intern (SDE I)",
+      company: "PolicyBazaar.com",
+      duration: "May 2025 – July 2025",
+      location: "Gurgaon, Haryana",
+      responsibilities: [
+        "Contributed to developing investment-related features using React and MongoDB in the Investment Tech team",
+        "Built scalable and efficient projects ensuring smooth user experiences and optimal performance",
+        "Collaborated with cross-functional teams to deliver high-quality solutions for the investment domain",
+        "Gained hands-on experience with enterprise-level software development practices"
+      ]
+    },
+    {
+      position: "Project Intern",
+      company: "MetaCrafters",
+      duration: "June 2024 – September 2024",
+      location: "Online",
+      responsibilities: [
+        "Worked on comprehensive blockchain projects across multiple platforms including Ethereum, Avalanche, and Polygon",
+        "Gained practical experience in decentralized technologies and smart contract development",
+        "Won scholarship for outstanding dedication and expertise in the blockchain domain",
+        "Developed proficiency in various blockchain development tools and frameworks"
+      ]
     }
-}
-
-// Initialize theme
-setTheme(currentTheme);
-
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-    });
-}
-
-// Mobile Menu Toggle
-if (mobileMenuToggle && navMenu) {
-    mobileMenuToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        mobileMenuToggle.classList.toggle('active');
-    });
-}
-
-// Close mobile menu when clicking on nav links
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        if (navMenu) {
-            navMenu.classList.remove('active');
-        }
-        if (mobileMenuToggle) {
-            mobileMenuToggle.classList.remove('active');
-        }
-    });
-});
-
-// Fixed Smooth Scrolling Navigation
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 80; // Account for fixed navbar
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Active Navigation Link
-function updateActiveNavLink() {
-    const sections = document.querySelectorAll('section');
-    const scrollY = window.pageYOffset + 120;
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute('id');
-        const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
-        
-        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-            navLinks.forEach(link => link.classList.remove('active'));
-            if (navLink) {
-                navLink.classList.add('active');
-            }
-        }
-    });
-}
-
-window.addEventListener('scroll', updateActiveNavLink);
-
-// Typing Animation
-const roles = [
-    'Full Stack Developer',
-    'Blockchain Enthusiast', 
-    'AI Innovator',
-    'Software Engineer',
-    'Problem Solver'
-];
-
-let currentRoleIndex = 0;
-let currentCharIndex = 0;
-let isDeleting = false;
-let typingSpeed = 150;
-
-function typeRole() {
-    if (!typingText) return;
-    
-    const currentRole = roles[currentRoleIndex];
-    
-    if (isDeleting) {
-        typingText.textContent = currentRole.substring(0, currentCharIndex - 1);
-        currentCharIndex--;
-        typingSpeed = 75;
-    } else {
-        typingText.textContent = currentRole.substring(0, currentCharIndex + 1);
-        currentCharIndex++;
-        typingSpeed = 150;
+  ],
+  projects: [
+    {
+      name: "Decentralized Dining Platform",
+      date: "February 2024",
+      technologies: ["Blockchain", "Web3.js", "Solidity", "MetaMask"],
+      description: "Developed an innovative blockchain-based dining solution enabling customers to access decentralized menus. Implemented secure cryptocurrency payment system via MetaMask integration with transaction transparency and smart contract functionality for payments and menu management."
+    },
+    {
+      name: "Advanced E-commerce Platform",
+      date: "November 2023",
+      technologies: ["MongoDB", "ExpressJS", "ReactJS", "NodeJS"],
+      description: "Built a comprehensive full-stack e-commerce platform with advanced filtering capabilities. Features include dynamic product search, user authentication, shopping cart functionality, payment integration, and responsive design with admin panel."
+    },
+    {
+      name: "AI-Based Traffic Management System",
+      date: "2024",
+      technologies: ["IoT Sensors", "AI/ML", "Python", "Computer Vision"],
+      description: "Developed intelligent traffic management system analyzing real-time traffic data. Implemented dynamic traffic light control, integrated IoT sensors with machine learning algorithms for predictive optimization, achieving significant improvements in traffic flow efficiency."
     }
-    
-    if (!isDeleting && currentCharIndex === currentRole.length) {
-        typingSpeed = 2000;
-        isDeleting = true;
-    } else if (isDeleting && currentCharIndex === 0) {
-        isDeleting = false;
-        currentRoleIndex = (currentRoleIndex + 1) % roles.length;
-        typingSpeed = 500;
+  ],
+  education: [
+    {
+      institution: "Chandigarh University, Mohali, Punjab",
+      degree: "Bachelor of Engineering - Computer Science and Engineering",
+      duration: "August 2022 – August 2026",
+      grade: "CGPA: 8.22"
+    },
+    {
+      institution: "Jawahar Navodaya Vidyalaya, Begusarai, Bihar",
+      degree: "Intermediate - PCM",
+      duration: "Completed: August 2022",
+      grade: "Percentage: 94.80%"
+    },
+    {
+      institution: "Jawahar Navodaya Vidyalaya, Begusarai, Bihar",
+      degree: "Matriculation-All",
+      duration: "Completed: March 2020",
+      grade: "Percentage: 94.20%"
     }
-    
-    setTimeout(typeRole, typingSpeed);
-}
-
-// Start typing animation
-if (typingText) {
-    typeRole();
-}
-
-// Particle System
-function createParticles() {
-    if (!particlesContainer) return;
-    
-    const particleCount = 50;
-    
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        
-        const size = Math.random() * 4 + 2;
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-        const animationDuration = Math.random() * 20 + 10;
-        
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-        particle.style.animationDuration = `${animationDuration}s`;
-        particle.style.animationDelay = `${Math.random() * 5}s`;
-        
-        particlesContainer.appendChild(particle);
-    }
-}
-
-// Initialize particles
-createParticles();
-
-// Intersection Observer for Animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+  ],
+  certifications: [
+    "ReactJS & IoT - Coursera",
+    "Java Programming - Professional Certification",
+    "Python & Django Web Development - Coursera",
+    "Cloud Computing Fundamentals - NPTEL",
+    "C++ Programming - Professional Certification",
+    "Computer Architecture - NPTEL",
+    "Machine Learning, Flutter & Mobile Development - Workshop Certification"
+  ],
+  achievements: [
+    "KVPY (Kishore Vaigyanik Protsahan Yojana) Bronze Medal Recipient",
+    "SIH (Smart India Hackathon) & University Level Hackathon Certifications",
+    "MetaCrafters Blockchain Development Scholarship Winner",
+    "Consistent academic performance with 8.22 CGPA"
+  ]
 };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            
-            // Trigger stat counter animation
-            if (entry.target.classList.contains('stat-number')) {
-                animateStatNumber(entry.target);
-            }
-            
-            // Trigger progress bar animation
-            if (entry.target.classList.contains('progress-bar')) {
-                animateProgressBar(entry.target);
-            }
-        }
-    });
-}, observerOptions);
+// Theme Hook
+const useTheme = () => {
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('portfolio-theme');
+    return savedTheme || 'light';
+  });
 
-// Observe elements for animations
-document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in').forEach(el => {
-    observer.observe(el);
-});
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('portfolio-theme', theme);
+  }, [theme]);
 
-// Add animation classes to elements
-function addAnimationClasses() {
-    // About section animations
-    const aboutText = document.querySelector('.about-text');
-    const aboutDetails = document.querySelector('.about-details');
-    if (aboutText) aboutText.classList.add('fade-in');
-    if (aboutDetails) aboutDetails.classList.add('slide-in-left');
-    
-    document.querySelectorAll('.stat-card').forEach((card, index) => {
-        card.classList.add('scale-in');
-        card.style.transitionDelay = `${index * 0.1}s`;
-    });
-    
-    // Experience section animations
-    document.querySelectorAll('.timeline-item').forEach((item, index) => {
-        if (index % 2 === 0) {
-            item.classList.add('slide-in-left');
-        } else {
-            item.classList.add('slide-in-right');
-        }
-        item.style.transitionDelay = `${index * 0.2}s`;
-    });
-    
-    // Project cards animations
-    document.querySelectorAll('.project-card').forEach((card, index) => {
-        card.classList.add('fade-in');
-        card.style.transitionDelay = `${index * 0.1}s`;
-    });
-    
-    // Skill categories animations
-    document.querySelectorAll('.skill-category').forEach((category, index) => {
-        category.classList.add('fade-in');
-        category.style.transitionDelay = `${index * 0.2}s`;
-    });
-    
-    // Contact section animations
-    document.querySelectorAll('.contact-card').forEach((card, index) => {
-        card.classList.add('scale-in');
-        card.style.transitionDelay = `${index * 0.1}s`;
-    });
-    
-    const contactForm = document.querySelector('.contact-form');
-    if (contactForm) contactForm.classList.add('slide-in-right');
-}
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
-// Initialize animations
-addAnimationClasses();
+  return { theme, toggleTheme };
+};
 
-// Stat Number Animation
-function animateStatNumber(element) {
-    const target = parseFloat(element.getAttribute('data-target'));
-    const duration = 2000;
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            current = target;
-            clearInterval(timer);
-        }
+// Intersection Observer Hook
+const useInView = (options = {}) => {
+  const [isInView, setIsInView] = useState(false);
+  const ref = useRef();
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.1, ...options });
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, isInView];
+};
+
+// Header Component
+const Header = ({ theme, toggleTheme, activeSection }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: '#hero', label: 'Home' },
+    { href: '#about', label: 'About' },
+    { href: '#skills', label: 'Skills' },
+    { href: '#experience', label: 'Experience' },
+    { href: '#projects', label: 'Projects' },
+    { href: '#education', label: 'Education' },
+    { href: '#certifications', label: 'Certifications' },
+    { href: '#contact', label: 'Contact' }
+  ];
+
+  const handleNavClick = (href) => {
+    setIsMobileMenuOpen(false);
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <header className="header">
+      <nav className="nav">
+        <a href="#hero" className="nav-brand" onClick={(e) => { e.preventDefault(); handleNavClick('#hero'); }}>
+          Piyush Bhardwaj
+        </a>
         
-        if (target % 1 === 0) {
-            element.textContent = Math.floor(current);
-        } else {
-            element.textContent = current.toFixed(2);
-        }
-    }, duration / steps);
-}
+        <ul className="nav-links">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <a 
+                href={link.href} 
+                className={activeSection === link.href.slice(1) ? 'active' : ''}
+                onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
 
-// Progress Bar Animation
-function animateProgressBar(element) {
-    const progress = element.getAttribute('data-progress');
-    setTimeout(() => {
-        element.style.width = `${progress}%`;
-    }, 200);
-}
-
-// Observe stat numbers and progress bars
-statNumbers.forEach(stat => observer.observe(stat));
-progressBars.forEach(bar => observer.observe(bar));
-
-// Project Filter Functionality
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove active class from all buttons
-        filterBtns.forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
-        btn.classList.add('active');
-        
-        const filter = btn.getAttribute('data-filter');
-        
-        projectCards.forEach(card => {
-            const category = card.getAttribute('data-category');
-            
-            if (filter === 'all' || category === filter) {
-                card.classList.remove('hidden');
-                card.style.display = 'block';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            } else {
-                card.classList.add('hidden');
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                setTimeout(() => {
-                    if (card.classList.contains('hidden')) {
-                        card.style.display = 'none';
-                    }
-                }, 300);
-            }
-        });
-    });
-});
-
-// Notification System
-function showNotification(message, type) {
-    // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.notification');
-    existingNotifications.forEach(notification => notification.remove());
-    
-    const notification = document.createElement('div');
-    notification.className = `notification notification--${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-            <span>${message}</span>
+        <div className="nav-controls">
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+            <i className={`fas ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
+          </button>
+          <button 
+            className="mobile-menu-btn" 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+          </button>
         </div>
-        <button class="notification-close">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
-    
-    // Add notification styles
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : '#ef4444'};
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        min-width: 300px;
-        transform: translateX(400px);
-        transition: transform 0.3s ease;
-        font-family: inherit;
-    `;
-    
-    const content = notification.querySelector('.notification-content');
-    content.style.cssText = `
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    `;
-    
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0.8;
-        transition: opacity 0.2s ease;
-    `;
-    
-    closeBtn.addEventListener('mouseover', () => {
-        closeBtn.style.opacity = '1';
-    });
-    
-    closeBtn.addEventListener('mouseout', () => {
-        closeBtn.style.opacity = '0.8';
-    });
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.style.transform = 'translateX(400px)';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
-        }
-    }, 5000);
-    
-    // Manual close
-    closeBtn.addEventListener('click', () => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 300);
-    });
-}
+      </nav>
+    </header>
+  );
+};
 
-// Fixed Contact Form Handler
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
+// Hero Section Component
+const HeroSection = () => {
+  const [ref, isInView] = useInView();
+  const { personal_info, stats } = portfolioData;
+
+  return (
+    <section id="hero" ref={ref} className={`section hero ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <div className="hero-profile">
+          {personal_info.name.split(' ').map(name => name[0]).join('')}
+        </div>
+        <h1 className="hero-name">{personal_info.name}</h1>
+        <p className="hero-title">{personal_info.title}</p>
+        <p className="hero-bio">{personal_info.bio}</p>
         
-        // Get form data
-        const formData = new FormData(contactForm);
-        const name = formData.get('name')?.trim();
-        const email = formData.get('email')?.trim();
-        const subject = formData.get('subject')?.trim();
-        const message = formData.get('message')?.trim();
-        
-        // Simple validation
-        if (!name || !email || !subject || !message) {
-            showNotification('Please fill in all fields', 'error');
-            return;
-        }
-        
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            showNotification('Please enter a valid email address', 'error');
-            return;
-        }
-        
-        // Show loading state
-        const submitBtn = contactForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        submitBtn.disabled = true;
-        
-        // Simulate form submission delay
-        setTimeout(() => {
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            contactForm.reset();
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }, 1500);
-    });
-}
+        <div className="hero-stats">
+          <div className="stat-card">
+            <div className="stat-number">{stats.experience_years}</div>
+            <div className="stat-label">Years Experience</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{stats.technologies_count}</div>
+            <div className="stat-label">Technologies</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{stats.projects_count}</div>
+            <div className="stat-label">Major Projects</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">{stats.certifications_count}</div>
+            <div className="stat-label">Certifications</div>
+          </div>
+        </div>
 
-// Fixed Resume Download
-if (downloadResumeBtn) {
-    downloadResumeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Show downloading state
-        const originalText = downloadResumeBtn.innerHTML;
-        downloadResumeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
-        
-        // Create a comprehensive resume content
-        const resumeContent = `PIYUSH BHARDWAJ
-Software Developer & Blockchain Enthusiast
+        <div className="hero-contact">
+          <a href={`mailto:${personal_info.email}`} className="contact-btn">
+            <i className="fas fa-envelope"></i>
+            Email
+          </a>
+          <a href={`tel:${personal_info.phone}`} className="contact-btn">
+            <i className="fas fa-phone"></i>
+            Call
+          </a>
+          <a href={personal_info.linkedin} target="_blank" rel="noopener noreferrer" className="contact-btn contact-btn--secondary">
+            <i className="fab fa-linkedin"></i>
+            LinkedIn
+          </a>
+          <a href={personal_info.github} target="_blank" rel="noopener noreferrer" className="contact-btn contact-btn--secondary">
+            <i className="fab fa-github"></i>
+            GitHub
+          </a>
+          <a href={personal_info.leetcode} target="_blank" rel="noopener noreferrer" className="contact-btn contact-btn--secondary">
+            <i className="fas fa-code"></i>
+            LeetCode
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
 
-CONTACT INFORMATION
-====================
-Email: piyushkr07p@gmail.com
-Phone: +91 7520319768
-Location: Gurgaon, Haryana
-LinkedIn: LinkedIn Profile
-GitHub: GitHub Profile
-LeetCode: LeetCode Profile
+// About Section Component
+const AboutSection = () => {
+  const [ref, isInView] = useInView();
 
-EDUCATION
-=========
-Chandigarh University, Mohali, Punjab
-Bachelor of Engineering - Computer Science and Engineering
-Duration: August 2022 – August 2026
-CGPA: 8.22
+  return (
+    <section id="about" ref={ref} className={`section ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">About Me</h2>
+        <div className="section-subtitle">
+          I'm a passionate software developer with a strong foundation in computer science and a keen interest in emerging technologies. 
+          My journey spans full-stack web development, blockchain technologies, and artificial intelligence, 
+          always striving to create innovative solutions that make a difference.
+        </div>
+        <div className="about-content" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)', lineHeight: '1.6', marginBottom: 'var(--space-24)' }}>
+            Currently pursuing my Bachelor's in Computer Science Engineering at Chandigarh University, 
+            I have gained practical experience through internships at PolicyBazaar.com and MetaCrafters, 
+            where I worked on investment technologies and blockchain development respectively.
+          </p>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)', lineHeight: '1.6' }}>
+            My expertise lies in building scalable web applications using the MERN stack and developing 
+            decentralized applications on various blockchain platforms. I'm always eager to learn new technologies 
+            and take on challenging projects that push the boundaries of what's possible.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
 
-Jawahar Navodaya Vidyalaya, Delhi, New Delhi
-Intermediate - PCMB
-Completed: August 2022
-Percentage: 94.80%
+// Skills Section Component
+const SkillsSection = () => {
+  const [ref, isInView] = useInView();
+  const { skills } = portfolioData;
 
-TECHNICAL SKILLS
-================
-Programming Languages: Java, C, C++, JavaScript, SQL, Python
-Web Technologies: HTML5, CSS3, Bootstrap, Tailwind CSS, ReactJS, NodeJS, ExpressJS, MongoDB, .NET Framework
-Blockchain Technologies: Solidity, Web3.js, Smart Contracts, Ethereum, Avalanche, Polygon, MetaMask
-Development Tools: VS Code, Git/GitHub, Postman
-Core Competencies: Web Development, Blockchain Development, Data Structures & Algorithms, Operating Systems, Computer Architecture, Database Management Systems, Computer Networks, Object-Oriented Programming
-
-PROFESSIONAL EXPERIENCE
-========================
-Software Engineer Intern (SDE I) | PolicyBazaar.com
-May 2024 – July 2024 | Gurgaon, Haryana
-• Contributed to developing investment-related features using React and MongoDB in the Investment Tech team
-• Built scalable and efficient projects ensuring smooth user experiences and optimal performance
-• Collaborated with cross-functional teams to deliver high-quality solutions for the investment domain
-• Gained hands-on experience with enterprise-level software development practices
-
-Project Intern | MetaCrafters
-June 2024 – September 2024 | Online
-• Worked on comprehensive blockchain projects across multiple platforms including Ethereum, Avalanche, and Polygon
-• Gained practical experience in decentralized technologies and smart contract development
-• Won scholarship for outstanding dedication and expertise in the blockchain domain
-• Developed proficiency in various blockchain development tools and frameworks
-
-KEY PROJECTS
-============
-Decentralized Dining Platform | February 2024
-Technologies: Blockchain, Web3.js, Solidity, MetaMask
-• Developed an innovative blockchain-based dining solution enabling customers to access decentralized menus
-• Implemented secure cryptocurrency payment system via MetaMask integration
-• Ensured transaction transparency, security, and decentralization to enhance customer dining experience
-• Created smart contracts for handling payments and menu management
-
-Advanced E-commerce Platform | November 2023  
-Technologies: MongoDB, ExpressJS, ReactJS, NodeJS (MERN Stack)
-• Built a comprehensive full-stack e-commerce platform with advanced filtering capabilities
-• Implemented dynamic product search and filtering based on categories, price, ratings, and specifications
-• Developed user authentication system, shopping cart functionality, and payment integration
-• Created responsive design with admin panel for inventory and order management
-
-AI-Based Traffic Management System | 2024
-Technologies: IoT Sensors, AI/ML, Python, Computer Vision
-• Developed intelligent traffic management system analyzing real-time traffic data
-• Implemented dynamic traffic light control based on congestion levels and traffic flow patterns
-• Integrated IoT sensors with machine learning algorithms for predictive traffic optimization
-• Achieved significant improvements in traffic flow efficiency and reduced wait times
-
-CERTIFICATIONS & ACHIEVEMENTS
-=============================
-Technical Certifications:
-• ReactJS & IoT - Coursera
-• Java Programming - Professional Certification
-• Python & Django Web Development - Coursera
-• Cloud Computing Fundamentals - NPTEL
-• C++ Programming - Professional Certification  
-• Computer Architecture - NPTEL
-• Machine Learning, Flutter & Mobile Development - Workshop Certification
-
-Notable Achievements:
-• KVPY (Kishore Vaigyanik Protsahan Yojana) Bronze Medal Recipient
-• SIH (Smart India Hackathon) & University Level Hackathon Certifications
-• MetaCrafters Blockchain Development Scholarship Winner
-• Consistent academic performance with 8.22 CGPA
-
-AREAS OF EXPERTISE
-==================
-• Full-Stack Web Development (MERN Stack)
-• Blockchain Development & Smart Contracts
-• Artificial Intelligence & Machine Learning
-• Internet of Things (IoT) Integration
-• Database Design & Management
-• Software Architecture & System Design
-• Version Control & Collaborative Development
-• Problem Solving & Algorithmic Thinking
-
-LANGUAGES
-=========
-• English (Fluent)
-• Hindi (Native)
-
-INTERESTS
-=========
-• Blockchain Technology & DeFi
-• Artificial Intelligence Research
-• Open Source Contributions
-• Tech Innovation & Entrepreneurship
-• Continuous Learning & Skill Development
-
-Generated on: ${new Date().toLocaleDateString()}
-        `;
-        
-        setTimeout(() => {
-            // Create and download file
-            const blob = new Blob([resumeContent], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'Piyush_Bhardwaj_Resume.txt';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-            
-            // Restore button
-            downloadResumeBtn.innerHTML = originalText;
-            showNotification('Resume downloaded successfully!', 'success');
-        }, 1000);
-    });
-}
-
-// Fix Project Links
-document.querySelectorAll('.project-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const linkText = link.textContent.trim();
-        if (linkText.includes('Live Demo')) {
-            showNotification('Live demo will be available soon!', 'error');
-        } else if (linkText.includes('Code') || linkText.includes('GitHub')) {
-            showNotification('Source code repository will be shared upon request!', 'error');
-        }
-    });
-});
-
-// Navbar Background on Scroll
-function updateNavbarBackground() {
-    const navbar = document.getElementById('navbar');
-    if (!navbar) return;
-    
-    if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(0, 0, 0, 0.9)';
-        navbar.style.backdropFilter = 'blur(20px)';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.1)';
-        navbar.style.backdropFilter = 'blur(10px)';
+  const skillCategories = [
+    {
+      title: 'Programming Languages',
+      icon: 'fa-code',
+      skills: skills.programming_languages
+    },
+    {
+      title: 'Web Technologies',
+      icon: 'fa-globe',
+      skills: skills.web_technologies
+    },
+    {
+      title: 'Blockchain Technologies',
+      icon: 'fa-link',
+      skills: skills.blockchain_technologies
+    },
+    {
+      title: 'Development Tools',
+      icon: 'fa-tools',
+      skills: skills.development_tools
+    },
+    {
+      title: 'Core Competencies',
+      icon: 'fa-brain',
+      skills: skills.core_competencies
     }
-}
+  ];
 
-// Parallax Effect for Hero Section
-function updateParallax() {
-    const scrolled = window.pageYOffset;
-    const heroBackground = document.querySelector('.hero-background');
-    const parallaxSpeed = 0.5;
-    
-    if (heroBackground) {
-        heroBackground.style.transform = `translateY(${scrolled * parallaxSpeed}px)`;
-    }
-}
+  return (
+    <section id="skills" ref={ref} className={`section ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">Technical Skills</h2>
+        <div className="skills-grid">
+          {skillCategories.map((category, index) => (
+            <div key={index} className="skill-category">
+              <h3 className="skill-category-title">
+                <i className={`fas ${category.icon} skill-category-icon`}></i>
+                {category.title}
+              </h3>
+              <div className="skills-list">
+                {category.skills.map((skill, skillIndex) => (
+                  <span key={skillIndex} className="skill-tag">{skill}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
-// Smooth reveal animations for elements
-function revealElementsOnScroll() {
-    const reveals = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in');
-    
-    reveals.forEach(element => {
-        const windowHeight = window.innerHeight;
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-        
-        if (elementTop < windowHeight - elementVisible) {
-            element.classList.add('visible');
+// Experience Section Component
+const ExperienceSection = () => {
+  const [ref, isInView] = useInView();
+  const { experience } = portfolioData;
+
+  return (
+    <section id="experience" ref={ref} className={`section ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">Work Experience</h2>
+        <div className="experience-timeline">
+          {experience.map((exp, index) => (
+            <div key={index} className="experience-item">
+              <div className="experience-card">
+                <div className="experience-header">
+                  <h3 className="experience-position">{exp.position}</h3>
+                  <div className="experience-company">{exp.company}</div>
+                  <div className="experience-duration">{exp.duration} • {exp.location}</div>
+                </div>
+                <ul className="experience-responsibilities">
+                  {exp.responsibilities.map((resp, respIndex) => (
+                    <li key={respIndex}>{resp}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Projects Section Component
+const ProjectsSection = () => {
+  const [ref, isInView] = useInView();
+  const [searchTerm, setSearchTerm] = useState('');
+  const { projects } = portfolioData;
+
+  const filteredProjects = projects.filter(project =>
+    project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.technologies.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  return (
+    <section id="projects" ref={ref} className={`section ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">Featured Projects</h2>
+        <div style={{ maxWidth: '400px', margin: '0 auto var(--space-48) auto' }}>
+          <input
+            type="text"
+            placeholder="Search projects..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control"
+            style={{ textAlign: 'center' }}
+          />
+        </div>
+        <div className="projects-grid">
+          {filteredProjects.map((project, index) => (
+            <div key={index} className="project-card">
+              <div className="project-header">
+                <h3 className="project-title">{project.name}</h3>
+                <div className="project-date">{project.date}</div>
+              </div>
+              <div className="project-tech">
+                {project.technologies.map((tech, techIndex) => (
+                  <span key={techIndex} className="tech-tag">{tech}</span>
+                ))}
+              </div>
+              <p className="project-description">{project.description}</p>
+              <div className="project-actions">
+                <button className="btn btn--primary">
+                  <i className="fas fa-external-link-alt"></i>
+                  View Live
+                </button>
+                <button className="btn btn--outline">
+                  <i className="fab fa-github"></i>
+                  GitHub
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {filteredProjects.length === 0 && (
+          <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)' }}>
+            No projects found matching your search.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+// Education Section Component
+const EducationSection = () => {
+  const [ref, isInView] = useInView();
+  const { education } = portfolioData;
+
+  return (
+    <section id="education" ref={ref} className={`section ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">Education</h2>
+        <div className="education-grid">
+          {education.map((edu, index) => (
+            <div key={index} className="education-card">
+              <h3 className="education-institution">
+                <i className="fas fa-graduation-cap" style={{ marginRight: 'var(--space-8)', color: 'var(--color-primary)' }}></i>
+                {edu.institution}
+              </h3>
+              <div className="education-degree">{edu.degree}</div>
+              <div className="education-details">
+                <span>{edu.duration}</span>
+                <span className="education-grade">{edu.grade}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Certifications & Achievements Section Component
+const CertificationsSection = () => {
+  const [ref, isInView] = useInView();
+  const { certifications, achievements } = portfolioData;
+
+  return (
+    <section id="certifications" ref={ref} className={`section ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">Certifications & Achievements</h2>
+        <div className="certs-achievements">
+          <div>
+            <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-24)', textAlign: 'center' }}>
+              Certifications
+            </h3>
+            <div className="cert-list">
+              {certifications.map((cert, index) => (
+                <div key={index} className="cert-item">
+                  <i className="fas fa-certificate cert-icon"></i>
+                  <span className="cert-text">{cert}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-24)', textAlign: 'center' }}>
+              Achievements
+            </h3>
+            <div className="achievement-list">
+              {achievements.map((achievement, index) => (
+                <div key={index} className="achievement-item">
+                  <i className="fas fa-trophy achievement-icon"></i>
+                  <span className="achievement-text">{achievement}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Contact Section Component
+const ContactSection = () => {
+  const [ref, isInView] = useInView();
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const { personal_info } = portfolioData;
+
+  const handleFormChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Simulate form submission
+    alert('Thank you for your message! I\'ll get back to you soon.');
+    setFormData({ name: '', email: '', message: '' });
+  };
+
+  return (
+    <section id="contact" ref={ref} className={`section contact ${isInView ? 'animate-in' : ''}`}>
+      <div className="container">
+        <h2 className="section-title">Get In Touch</h2>
+        <div className="contact-content">
+          <form className="contact-form" onSubmit={handleFormSubmit}>
+            <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', marginBottom: 'var(--space-24)' }}>
+              Send me a message
+            </h3>
+            <div className="form-group">
+              <label className="form-label" htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleFormChange}
+                className="form-control"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" className="btn btn--primary" style={{ width: '100%' }}>
+              <i className="fas fa-paper-plane"></i>
+              Send Message
+            </button>
+          </form>
+
+          <div className="contact-info">
+            <div className="contact-info-card">
+              <i className="fas fa-envelope contact-icon"></i>
+              <div className="contact-details">
+                <h4>Email</h4>
+                <p><a href={`mailto:${personal_info.email}`}>{personal_info.email}</a></p>
+              </div>
+            </div>
+            <div className="contact-info-card">
+              <i className="fas fa-phone contact-icon"></i>
+              <div className="contact-details">
+                <h4>Phone</h4>
+                <p><a href={`tel:${personal_info.phone}`}>{personal_info.phone}</a></p>
+              </div>
+            </div>
+            <div className="contact-info-card">
+              <i className="fas fa-map-marker-alt contact-icon"></i>
+              <div className="contact-details">
+                <h4>Location</h4>
+                <p>{personal_info.location}</p>
+              </div>
+            </div>
+            <div className="contact-info-card">
+              <i className="fab fa-linkedin contact-icon"></i>
+              <div className="contact-details">
+                <h4>LinkedIn</h4>
+                <p><a href={personal_info.linkedin} target="_blank" rel="noopener noreferrer">Connect with me</a></p>
+              </div>
+            </div>
+            <div className="contact-info-card">
+              <i className="fab fa-github contact-icon"></i>
+              <div className="contact-details">
+                <h4>GitHub</h4>
+                <p><a href={personal_info.github} target="_blank" rel="noopener noreferrer">View my work</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Back to Top Button Component
+const BackToTopButton = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+    <button 
+      className={`back-to-top ${isVisible ? 'visible' : ''}`}
+      onClick={scrollToTop}
+      aria-label="Back to top"
+    >
+      <i className="fas fa-arrow-up"></i>
+    </button>
+  );
+};
+
+// Download Resume Button Component
+const DownloadResumeButton = () => {
+  const handleDownload = () => {
+    // Simulate resume download
+    alert('Resume download would start here. (Demo functionality)');
+  };
+
+  return (
+    <button className="download-resume" onClick={handleDownload}>
+      <i className="fas fa-download"></i>
+      Download Resume
+    </button>
+  );
+};
+
+// Main App Component
+const App = () => {
+  const { theme, toggleTheme } = useTheme();
+  const [activeSection, setActiveSection] = useState('hero');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['hero', 'about', 'skills', 'experience', 'projects', 'education', 'certifications', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && scrollPosition >= section.offsetTop) {
+          setActiveSection(sections[i]);
+          break;
         }
-    });
-}
+      }
+    };
 
-// Initialize skill animations
-function initializeSkillAnimations() {
-    const skillItems = document.querySelectorAll('.skill-item');
-    skillItems.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(30px)';
-        item.style.transition = 'all 0.6s ease';
-    });
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    const skillObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const skillCategory = entry.target.closest('.skill-category');
-                const items = skillCategory.querySelectorAll('.skill-item');
-                
-                items.forEach((item, index) => {
-                    setTimeout(() => {
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.skill-category').forEach(category => {
-        skillObserver.observe(category);
-    });
-}
+  return (
+    <div className="portfolio">
+      <Header theme={theme} toggleTheme={toggleTheme} activeSection={activeSection} />
+      <main className="main">
+        <HeroSection />
+        <AboutSection />
+        <SkillsSection />
+        <ExperienceSection />
+        <ProjectsSection />
+        <EducationSection />
+        <CertificationsSection />
+        <ContactSection />
+      </main>
+      <BackToTopButton />
+      <DownloadResumeButton />
+    </div>
+  );
+};
 
-// Add hover effects for project cards
-projectCards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-10px) scale(1.02)';
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0) scale(1)';
-    });
-});
-
-// Performance optimization - throttle scroll events
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    }
-}
-
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Set initial theme
-    setTheme(currentTheme);
-    
-    // Initialize active nav link
-    updateActiveNavLink();
-    
-    // Initialize navbar background
-    updateNavbarBackground();
-    
-    // Initialize skill animations
-    initializeSkillAnimations();
-    
-    // Initial reveal check
-    setTimeout(() => {
-        revealElementsOnScroll();
-    }, 100);
-    
-    // Apply throttled scroll events
-    window.addEventListener('scroll', throttle(() => {
-        updateActiveNavLink();
-        updateNavbarBackground();
-        updateParallax();
-        revealElementsOnScroll();
-    }, 16)); // ~60fps
-});
-
-// Loading screen management
-window.addEventListener('load', () => {
-    const loading = document.querySelector('.loading');
-    if (loading) {
-        loading.classList.add('hide');
-        setTimeout(() => {
-            loading.remove();
-        }, 500);
-    }
-});
-
-// Add loading screen if it doesn't exist
-function addLoadingScreen() {
-    if (document.querySelector('.loading')) return;
-    
-    const loading = document.createElement('div');
-    loading.className = 'loading';
-    loading.innerHTML = '<div class="loader"></div>';
-    document.body.appendChild(loading);
-}
-
-// Initialize loading screen
-addLoadingScreen();
+// Render the App
+ReactDOM.render(<App />, document.getElementById('root'));
