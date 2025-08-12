@@ -14,25 +14,25 @@ const portfolioData = {
     bio: "Passionate software developer with expertise in full-stack web development and blockchain technologies. Currently pursuing Computer Science Engineering with a focus on innovative solutions and cutting-edge technologies."
   },
   stats: {
-    experience_years: "1+",
+    experience_years: "1",
     technologies_count: "22+",
     projects_count: "3",
-    certifications_count: "10+"
+    certifications_count: "10"
   },
   skills: {
-    programming_languages: ["Java", "C", "C++", "JavaScript", "SQL"],
-    web_technologies: ["HTML5", "CSS3", "Bootstrap", "Tailwind CSS", "ReactJS", "NodeJS", "ExpressJS", "MongoDB",],
-    //blockchain_technologies: ["Solidity", "Web3.js", "Smart Contracts", "Ethereum", "Avalanche", "Polygon", "MetaMask"],
+    programming_languages: ["Java", "C", "C++", "JavaScript", "SQL", "Python"],
+    web_technologies: ["HTML5", "CSS3", "Bootstrap", "Tailwind CSS", "ReactJS", "NodeJS", "ExpressJS", "MongoDB", ".NET Framework"],
+    blockchain_technologies: ["Solidity", "Web3.js", "Smart Contracts", "Ethereum", "Avalanche", "Polygon", "MetaMask"],
     development_tools: ["VS Code", "Git/GitHub", "Postman"],
     core_competencies: [
-      "Web Development", "Software Engineering", "Data Structures & Algorithms",
+      "Web Development", "Blockchain Development", "Data Structures & Algorithms",
       "Operating Systems", "Computer Architecture", "Database Management Systems",
-      "Computer Networks", "Object-Oriented Programming"
+      "Computer Networks", "Object-Oriented Programming","Software Engineering"
     ]
   },
   experience: [
     {
-      position: "Software Engineer Intern (SDE I)",
+      position: "Software Engineer Trainee",
       company: "PolicyBazaar.com",
       duration: "May 2025 – July 2025",
       location: "Gurgaon, Haryana",
@@ -65,13 +65,13 @@ const portfolioData = {
     },
     {
       name: "Advanced E-commerce Platform",
-      date: "November 2023",
+      date: "November 2024",
       technologies: ["MongoDB", "ExpressJS", "ReactJS", "NodeJS"],
       description: "Built a comprehensive full-stack e-commerce platform with advanced filtering capabilities. Features include dynamic product search, user authentication, shopping cart functionality, payment integration, and responsive design with admin panel."
     },
     {
       name: "AI-Based Traffic Management System",
-      date: "2024",
+      date: "2025",
       technologies: ["IoT Sensors", "AI/ML", "Python", "Computer Vision"],
       description: "Developed intelligent traffic management system analyzing real-time traffic data. Implemented dynamic traffic light control, integrated IoT sensors with machine learning algorithms for predictive optimization, achieving significant improvements in traffic flow efficiency."
     }
@@ -85,14 +85,14 @@ const portfolioData = {
     },
     {
       institution: "Jawahar Navodaya Vidyalaya, Begusarai, Bihar",
-      degree: "Intermediate - PCM",
+      degree: "Intermediate - PCMB",
       duration: "Completed: August 2022",
       grade: "Percentage: 94.80%"
     },
-    {
+     {
       institution: "Jawahar Navodaya Vidyalaya, Begusarai, Bihar",
       degree: "Matriculation-All",
-      duration: "Completed: March 2020",
+      duration: "Completed: March 2022",
       grade: "Percentage: 94.20%"
     }
   ],
